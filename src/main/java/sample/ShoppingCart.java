@@ -10,15 +10,7 @@ public class ShoppingCart {
     /**
      * Tests all class methods.
      */
-    public static void main(String[] args){
-        // TODO: add tests here
-        ShoppingCart cart = new ShoppingCart();
-        cart.addItem("Apple", 0.99, 5, ItemType.NEW);
-        cart.addItem("Banana", 20.00, 4, ItemType.SECOND_FREE);
-        cart.addItem("A long piece of toilet paper", 17.20, 1, ItemType.SALE);
-        cart.addItem("Nails", 2.00, 500, ItemType.REGULAR);
-        System.out.println(cart.formatTicket());
-    }
+    public static void main(String[] args) { }
     /**
      * Adds new item.
      *
@@ -59,26 +51,12 @@ public class ShoppingCart {
     public String formatTicket(){
         if (items.size() == 0)
             return "No items.";
-        List<String[]> lines = new ArrayList<>();
         String[] header = {"#","Item","Price","Quan.","Discount","Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
         // formatting each line
-        double total = 0.00;
-        int index = 0;
-        for (Item item : items) {
-            item.setDiscount(calculateDiscount(item.getType(), item.getQuantity()));
-            item.setTotal(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount()) / 100);
-            lines.add(new String[]{
-                    String.valueOf(++index),
-                    item.getTitle(),
-                    MONEY.format(item.getPrice()),
-                    String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
-                    MONEY.format(item.getTotal())
-            });
-            total += item.getTotal();
-        }
-        String[] footer = { String.valueOf(index),"","","","", MONEY.format(total) };
+        double total = calculateItemsTotal();
+        List<String[]> lines = formTable();
+        String[] footer = { String.valueOf(items.size()),"","","","", MONEY.format(total) };
         // formatting table
         // column max length
         int[] width = new int[]{0,0,0,0,0,0};
@@ -108,6 +86,35 @@ public class ShoppingCart {
         appendLine(footer, align, width, sb, false);
         return sb.toString();
     }
+
+    private List<String[]> formTable() {
+        List<String[]> lines = new ArrayList<>();
+        int index = 0;
+
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
+                    MONEY.format(item.getTotal())
+            });
+        }
+        return lines;
+    }
+
+    private double calculateItemsTotal() {
+        double total = 0.00;
+
+        for (Item item : items) {
+            item.setDiscount(calculateDiscount(item.getType(), item.getQuantity()));
+            item.setTotal(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount()) / 100);
+            total += item.getTotal();
+        }
+        return total;
+    }
+
     private void appendSeparator(int lineLength, StringBuilder sb) {
         for (int i = 0; i < lineLength; i++) {
             sb.append("-");
