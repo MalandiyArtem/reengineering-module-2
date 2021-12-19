@@ -36,11 +36,7 @@ public class ShoppingCart {
             throw new IllegalArgumentException("Illegal price");
         if (quantity <= 0)
             throw new IllegalArgumentException("Illegal quantity");
-        Item item = new Item();
-        item.title = title;
-        item.price = price;
-        item.quantity = quantity;
-        item.type = type;
+        Item item = new Item(title, price, quantity, type);
         items.add(item);
     }
 
@@ -70,13 +66,13 @@ public class ShoppingCart {
         double total = 0.00;
         int index = 0;
         for (Item item : items) {
-            int discount = calculateDiscount(item.type, item.quantity);
-            double itemTotal = item.price * item.quantity * (100.00 - discount) / 100.00;
+            int discount = calculateDiscount(item.getType(), item.getQuantity());
+            double itemTotal = item.getPrice() * item.getQuantity() * (100.00 - discount) / 100.00;
             lines.add(new String[]{
                     String.valueOf(++index),
-                    item.title,
-                    MONEY.format(item.price),
-                    String.valueOf(item.quantity),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
                     (discount == 0) ? "-" : (discount + "%"),
                     MONEY.format(itemTotal)
             });
@@ -187,13 +183,6 @@ public class ShoppingCart {
                 discount = 80;
         }
         return discount;
-    }
-    /** item info */
-    private static class Item{
-        String title;
-        double price;
-        int quantity;
-        ItemType type;
     }
     /** Container for added items */
     private List<Item> items = new ArrayList<>();
