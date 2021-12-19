@@ -5,6 +5,8 @@ public class Item {
     private double price;
     private int quantity;
     private ShoppingCart.ItemType type;
+    private double total;
+    private int discount;
 
     public Item(String title, double price, int quantity, ShoppingCart.ItemType type) {
         this.title = title;
@@ -43,5 +45,21 @@ public class Item {
 
     public void setType(ShoppingCart.ItemType type) {
         this.type = type;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public int getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 }

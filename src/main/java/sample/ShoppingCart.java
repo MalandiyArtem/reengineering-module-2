@@ -66,17 +66,17 @@ public class ShoppingCart {
         double total = 0.00;
         int index = 0;
         for (Item item : items) {
-            int discount = calculateDiscount(item.getType(), item.getQuantity());
-            double itemTotal = item.getPrice() * item.getQuantity() * (100.00 - discount) / 100.00;
+            item.setDiscount(calculateDiscount(item.getType(), item.getQuantity()));
+            item.setTotal(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount()) / 100);
             lines.add(new String[]{
                     String.valueOf(++index),
                     item.getTitle(),
                     MONEY.format(item.getPrice()),
                     String.valueOf(item.getQuantity()),
-                    (discount == 0) ? "-" : (discount + "%"),
-                    MONEY.format(itemTotal)
+                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
+                    MONEY.format(item.getTotal())
             });
-            total += itemTotal;
+            total += item.getTotal();
         }
         String[] footer = { String.valueOf(index),"","","","", MONEY.format(total) };
         // formatting table
